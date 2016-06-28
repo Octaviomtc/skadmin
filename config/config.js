@@ -14,7 +14,7 @@ config.development = {
   host_db:        "localhost",
   db:             "mongodb://localhost/shkola_admin",
   env:            "development",
-  port:           process.env.PORT || 3000
+  port:           process.env.PORT || 3900
 };
 
 
