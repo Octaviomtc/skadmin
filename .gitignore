@@ -1,7 +1,6 @@
-node_modules
 public/vendor
+node_modules
 .sass-cache
 npm-debug.log
 temp
 logs
-
