@@ -1,0 +1,59 @@
+extends ../../layouts/app
+
+block content
+        //- table.table.table-striped.table-bordered
+        //-       thead
+        //-         tr
+        //-           th.th-sp Idioma
+        //-           th.th-sp Total alumnos
+        //-           th.th-sp Total Grupos
+        //-       tbody
+        form(method='POST', action='imprimir')
+              .form-group
+                      label Nombre
+                      input.form-control(type='text', placeholder='Nombre', name='nombre')
+              .form-group
+                      label Apellidos
+                      input.form-control(type='text', placeholder='Nombre', name='apellidos')
+              .form-group
+                      label Idioma
+                      input.form-control(type='text', placeholder='Idioma', name='idioma')
+              .form-group
+                      label Grupo
+                      input.form-control(type='text', placeholder='Grupo', name='grupo')
+              .form-group
+                      label Horario
+                      input.form-control(type='text', placeholder='Horario', name='horario')
+              .form-group
+                      label ¿Qué mes cubre?
+                      select.form-control(name='mes')
+                              option(value='') Seleccione un mes
+                              option(value='Enero') Enero
+                              option(value='Febrero') Febrero
+                              option(value='Marzo') Marzo
+                              option(value='Abril') Abril
+                              option(value='Mayo') Mayo
+                              option(value='Junio') Junio
+                              option(value='Julio') Julio
+                              option(value='Agosto') Agosto
+                              option(value='Septiembre') Septiembre
+                              option(value='Octubre') Octubre
+                              option(value='Noviembre') Noviembre
+                              option(value='Diciembre') Diciembre
+                              
+              .form-group
+                      label Próximo pago
+                      input.form-control(type='text', placeholder='Pago', name='pago')
+              .form-group
+                      label Boleta
+                      input.form-control(type='text', placeholder='0000', name='boleta')
+              .form-group
+                      label Folio
+                      input.form-control(type='text', placeholder='0000', name='folio')
+              .form-group
+                      label Importe
+                      input.form-control(type='text', placeholder='$', name='importe')
+
+
+                              
+              button.btn.btn-default(type='submit') Imprimir

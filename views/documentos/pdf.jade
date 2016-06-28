@@ -1,0 +1,82 @@
+head
+        meta(charset="utf-8")
+        link(rel="stylesheet", href="/public/stylesheets/pdf.css", media="screen", title="no title", charset="utf-8")
+        
+body
+        .section.group
+                .col.span_5_of_10
+                        .imagenDisp
+                .col.span_5_of_10
+                        .docfile
+                                .title RECIBO DE PAGO
+                                .folio FOLIO: #{folio}
+        
+        .section.group
+                .col.span_5_of_10
+                .col.span_5_of_10
+                        .sec2
+                                .folio Este recibo cubre los pagos:
+                                .pagos Del mes de #{mes} de 2016
+
+
+
+
+        .section.group
+                .col.span_5_of_10
+                        .sec3
+                                .nombre #{nombre}
+                                .apellidos #{apellidos}
+                .col.span_5_of_10
+                        .sec4
+                                .importe
+                                         | $#{importe}.00
+        hr
+        .section.group
+                .col.span_5_of_10
+                        .sec5
+                                .title Número de registro
+                                .reg #{boleta}
+                .col.span_5_of_10
+                        .sec5
+        hr
+        .section.group
+                .col.span_3_of_10
+                        .sec6
+                                .title Idioma
+                                .reg #{idioma}
+                .col.span_3_of_10
+                        .sec6
+                                .title Grupo
+                                .reg #{grupo}
+                .col-span_4_of_10
+                        .sec6
+                                .title Horario
+                                .sec #{horario}
+        hr
+                
+        .section.group
+                .col.span_2_of_10
+                .col.span_6_of_10
+                        .sec7
+                                .title IMPORTANTE
+                                .subtitle Toma en cuenta las fechas para tus proximos pagos
+        .section.group
+                .col.span_3_of_10
+                .col.span_4_of_10
+                        .sec8
+                                .title Próximo pago
+                                .reg #{pago}
+
+
+        .section.group
+                .col.span_4_of_10
+                        .de
+                                .section.group
+                                        .col.span_5_of_10
+                                                p Shkola idiomas 
+                                                p informus@shkolaidiomas.com
+                                                p http://shkolaidiomas.com
+                                        .col.span_5_of_10
+                                                p 55 16 42 45 63
+                                                p Ciudad de México
+                                        

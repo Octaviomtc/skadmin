@@ -1,0 +1,295 @@
+#mySess.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+      .modal-dialog
+        .modal-content
+          .modal-body
+            button.close(type='button', data-dismiss='modal', aria-label='Close')
+              span(aria-hidden='true') ×
+            h4#myModalLabel.modal-title
+            center
+              | Su sesión se ha cerrado por inactivdad.
+              hr
+              a#resSessFin.btn.btn-default(href="/signout") Finalizar
+
+script(src='/vendor/jquery/dist/jquery.js')
+script(src='/vendor/bootstrap/dist/js/bootstrap.js')
+script(src='/vendor/bootstrap-table/src/bootstrap-table.js')
+script(src='/vendor/bootstrap-table/dist/locale/bootstrap-table-es-AR.min.js')
+script(src='/vendor/jquery-form-validator/form-validator/jquery.form-validator.min.js')
+script(src='/vendor/bootstrap-switch/dist/js/bootstrap-switch.min.js')
+script(src='/vendor/bootstrap-filestyle/src/bootstrap-filestyle.js')
+script(src='/vendor/moment/min/moment.min.js')
+script(src='/vendor/fullcalendar/dist/fullcalendar.min.js')
+
+script.
+    console.log("config.maxAge");
+    var maxAge = "!{config.maxAge}";
+    console.log(maxAge);
+    var segundosMaxAge = (maxAge/1000);
+    
+    var segundos = 0;
+    setInterval(setTime, 1000);
+
+
+    function setTime(){
+        ++segundos;
+        //- console.log(segundos);
+        //- if(segundos == segundosMaxAge){
+        //- if(segundos == 15){
+        if(segundos == segundosMaxAge){
+            $.ajax({
+                url: "/signout",
+                data: {
+                      },                      
+                type: "POST",
+                dataType: "json",
+                success: function(source){
+                  if (source.success === true){
+                    console.log(segundosMaxAge);
+                    
+                  }
+                },
+                error: function(dato){
+                }
+              });
+
+            $("#mySess").modal('show');
+
+        }
+
+    }
+    // Estilos para input files
+    $(":file").filestyle({
+      buttonText:     "Seleccionar archivo",
+      buttonName:     "btn-primary",
+      buttonBefore:   true,
+      iconName:       "fa fa-file fa-r"
+    });
+  
+    //Se genera switch en checkbox
+    $.fn.bootstrapSwitch.defaults.size = 'small';
+    $.fn.bootstrapSwitch.defaults.onText = 'Si';
+    $.fn.bootstrapSwitch.defaults.offText = 'No';
+    $.fn.bootstrapSwitch.defaults.onColor = 'success';
+    $(".checkbox-sw").bootstrapSwitch();
+    
+    
+    //Asigna append
+    function add_append_select(id, value, text){
+        $("#"+id).append("<option value='"+value+"'>"+text+"</option>");
+    }
+    
+    $(document).ready(function(){
+        $(function () {
+          $('[data-toggle="tooltip-ayuda"]').tooltip()
+        })
+        // VALIDACIONES 
+        $.validate();    
+        var window_height = $(window).height();
+        var page_height = $('#encabezados').height() + $('#content').height();
+        var footer_height = $('.footerIPN').height();
+
+        if (page_height < window_height) {
+            margin_footer = window_height - page_height - footer_height -0;
+            $('.footerIPN').css('margin-top', margin_footer);
+        }
+
+        
+
+        //- VALIDACIONES
+
+          function destroyTool(id) {
+            $('#' + id).tooltip('destroy')
+          }
+
+          function msgError(id, msg) {
+            $('#' + id).tooltip({
+                title: msg
+            });
+            $('#' + id).tooltip('show');
+          }
+
+
+          var errorMs = '';
+
+          $.formUtils.addValidator({
+            name: 'empty',
+            validatorFunction: function(value, $el, config, language, $form) {
+                if (value.length === 0) {
+                    msgError($el.context.id, "El campo no puede estar vacío.");
+                    return false;
+                } else {
+                    destroyTool($el.context.id);
+                    return true;
+                }
+            },
+            errorMessage: errorMs,
+            errorMessageKey: 'Error'
+          });
+          
+          $.formUtils.addValidator({
+              name : 'longitud',
+              validatorFunction : function(val, $el, conf, lang, $form) {
+                  var lengthAllowed = $el.valAttr('length'),
+                      type = $el.attr('type');
+
+
+                  // check if length is above min, below max or within range.
+                  var len = type == 'file' && $el.get(0).files !== undefined ? $el.get(0).files.length : val.length,
+                      lengthCheckResults = $.formUtils.numericRangeCheck(len, lengthAllowed),
+                      checkResult, message_error;
+
+                  switch(lengthCheckResults[0])
+                  {   // outside of allowed range
+                      case "out":
+                          message_error = "La longitud del campo debe ser:" + lengthCheckResults[1]+" - "+lengthCheckResults[2];
+                          checkResult = true;
+                          break;
+                      // too short
+                      case "min":
+                          message_error = "La longitud del campo debe ser:" + lengthCheckResults[1]+" - "+lengthCheckResults[2];
+                          checkResult = true;
+                          break;
+                      // too long
+                      case "max":
+                          message_error = "La longitud del campo debe ser:" + lengthCheckResults[1]+" - "+lengthCheckResults[2];
+                          checkResult = true;
+                          break;
+                      // ok
+                      default:
+                          checkResult = false;
+                  }
+                  
+                  if(checkResult==false){
+                    //msgError($el.context.id, checkResult);
+                    destroyTool($el.context.id);
+                    return true;
+                  }else{
+                    msgError($el.context.id, message_error);
+                    return false;
+                  }
+              },
+              errorMessage : '',
+              errorMessageKey: ''
+          });
+          
+          $.formUtils.addValidator({
+              name : 'correo',
+              validatorFunction : function(value, $el, config, language, $form) {
+
+                  var emailParts = value.toLowerCase().split('@');
+                  if( emailParts.length == 2 ) {
+                    
+                    destroyTool($el.context.id);
+                      return $.formUtils.validators.validate_domain.validatorFunction(emailParts[1]) &&
+                              !(/[^\w\+\.\-]/.test(emailParts[0]));
+                              
+                  }else{
+                    msgError($el.context.id, "Correo no valido");
+                    return false;
+                  }  
+              },
+              errorMessage: errorMs,
+              errorMessageKey: 'Error'
+          });
+
+
+            //Validacion del curp
+            var curp = /^[A-Za-z]{4}\d{6}(H|M|h|m){1}[A-Za-z]{5}[A-Za-z0-9]{2}$/;
+
+          $.formUtils.addValidator({
+            name: 'curp',
+            validatorFunction: function(value, $el, config, language, $form) {
+                console.log(value);
+                console.log(curp.test(value));
+                if (curp.test(value)) {
+                    destroyTool($el.context.id);
+                    return true;
+                } else {
+                    msgError($el.context.id, "El formato de la CURP no es correcto");
+                    return false;
+                }
+            },
+            errorMessage: errorMs,
+            errorMessageKey: 'Error'
+          });
+
+          
+          
+          $.formUtils.addValidator({
+            name: 'maximo',
+            validatorFunction: function(value, $el, config, language, $form) {
+                console.log(value);
+                if (value >9) {
+                    destroyTool($el.context.id);
+                    return true;
+                } else {
+                    msgError($el.context.id, "El valor debe ser al menos 10 pariticipantes");
+                    return false;
+                }
+            },
+            errorMessage: errorMs,
+            errorMessageKey: 'Error'
+          });
+
+
+
+          var rfc = /^[A-Za-z]{4}\d{6}[A-Za-z0-9]{3}$/;
+
+          $.formUtils.addValidator({
+            name: 'rfc',
+            validatorFunction: function(value, $el, config, language, $form) {
+                console.log(value);
+                console.log(rfc.test(value));
+                if (rfc.test(value)) {
+                    destroyTool($el.context.id);
+                    return true;
+                } else {
+                    msgError($el.context.id, "El formato del RFC no es correcto");
+                    return false;
+                }
+            },
+            errorMessage: errorMs,
+            errorMessageKey: 'Error'
+          });
+
+
+
+         
+
+          function valida(e){
+                tecla = (document.all) ? e.keyCode : e.which;
+
+                //Tecla de retroceso para borrar, siempre la permite
+                if (tecla==8){
+                    return true;
+                }
+                
+                    // Patron de entrada, en este caso solo acepta numeros
+                    patron =/[0-9]/;
+                    tecla_final = String.fromCharCode(tecla);
+                    return patron.test(tecla_final);
+                }
+
+
+
+                function validaChar(e){
+                tecla = (document.all) ? e.keyCode : e.which;
+
+                //Tecla de retroceso para borrar, siempre la permite
+                if (tecla==8){
+                    return true;
+                }
+                
+                    // Patron de entrada, en este caso solo acepta letras
+                    patron =/[a-z,A-Z,ñ,Ñ, ]/;
+                    tecla_final = String.fromCharCode(tecla);
+                    return patron.test(tecla_final);
+                }
+
+
+
+
+    });
+	
+
+	

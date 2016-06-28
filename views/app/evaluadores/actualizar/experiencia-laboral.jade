@@ -1,0 +1,326 @@
+extends ../layout/layout-up
+
+block content
+  #message
+    if message
+      .error-message
+          a.text-center #{message}
+  .row
+    .col-md-12
+      .formulario.animated.fadeIn
+        
+        .contenido
+          .row
+            .col-md-11
+              form.form-horizontal(method='post', action="/evaluadores/#{evaluador.id}/datos-personales", enctype='application/json')
+                label(class="col-md-11 col-md-offset-1 alert alert-info") Experiencia Laboral
+                span(class="col-md-11 col-md-offset-1 alert alert-info")
+                  | Ingrese la información solicitada en relación con su experiencia en los cargos o puestos laborales con  duración mayor a un año.
+                  
+                +hr()
+                +h-input("text", "Institución pública", "institucion_publica", "Institución pública", evaluador.institucion_publica, 9, 3, "autofocus", "empty","")
+                +h-input("text", "Empresa privada", "empresa_privada", "Empresa privada", evaluador.empresa_privada, 9, 3, "", "empty","")
+                
+                .form-group
+                  span(class="control-label col-md-3")
+                    | Practica docente
+                    +ayuda("Ingrese la información relativa a sus últimos 5 años de experiencia docente frente a grupo")
+                  div(class="col-md-9")
+                    select#practicas_docentes.form-control(name='practicas_docentes',data-validation="empty", data-toggle="tooltip", data-placement="top", title="")
+                      option(value="") Seleccione ...
+                      option(value="Si", selected="Si" == evaluador.practicas_docentes) Si
+                      option(value="No", selected="No" == evaluador.practicas_docentes) No
+                
+                //- ************************************************************************
+                .row
+                  .container
+                    .Si_docente(id='Si_docente')
+                      +hr()
+                      .form-group
+                        span(class="control-label col-md-3")
+                          | Dependencia Politécnica Solicitante:
+                        div(class="col-md-9")
+                          select#dependencia.form-control(name='dependencia_experiencia',data-validation="empty", data-toggle="tooltip", data-placement="top", title="")
+                            option(value="") Seleccione dependencia ...
+                              each dependencia in dependencias
+                                option(value=dependencia.dependencia, selected= dependencia.dependencia == evaluador.dependencia_experiencia)= dependencia.dependencia
+
+                      .form-group#unidadForm
+                        span(class="control-label col-md-3")
+                          | 
+                        div(class="col-md-9")
+                          select#unidad.form-control(name='unidad_experiencia',data-validation="empty", data-toggle="tooltip", data-placement="top", title="")
+                            option(value="") Seleccione unidad ...
+                      br
+                      +h-input("text", "Institución pública", "institucion_publica_exp", "Institución pública", evaluador.institucion_publica_exp, 9, 3, "autofocus", "empty","")
+
+                      .row
+                        .form-group
+                        span(class="control-label col-md-3")
+                          | Modalidad:
+                        div(class="col-md-9")
+                          select#modalidad_evaluadores.form-control(name='modalidad_evaluadores_exp',data-validation="empty", data-toggle="tooltip", data-placement="top", title="")
+                            option(value="") Seleccione ...
+                            option(value="escolarizada", selected="escolarizada" == evaluador.modalidad_evaluadores_exp) Escolarizada
+                            option(value="no_escolarizada", selected="no_escolarizada" == evaluador.modalidad_evaluadores_exp) No escolarizada
+                            option(value="mixta", selected="mixta" == evaluador.modalidad_evaluadores_exp) Mixta
+                
+                //- ************************************************************************
+                .row
+                  .container
+                    .No_docente(id='No_docente')
+                      +hr()
+                      +h-input("text", "Nivel Educativo", "nivel_educativo_exp", "Nivel Educativo", evaluador.nivel_educativo_exp, 9, 3, "autofocus", "empty","")
+                      +h-input("text", "Asignatura", "asignatura_exp", "Asignatura", evaluador.asignatura_exp, 9, 3, "autofocus", "empty","")
+                      .row
+                        .form-group
+                        span(class="control-label col-md-3")
+                          | Modalidad:
+                        div(class="col-md-9")
+                          select#modalidad_evaluadores.form-control(name='modalidad_evaluadores_no',data-validation="empty", data-toggle="tooltip", data-placement="top", title="")
+                            option(value="") Seleccione ...
+                            option(value="escolarizada", selected="escolarizada" == evaluador.modalidad_evaluadores_no) Escolarizada
+                            option(value="no_escolarizada", selected="no_escolarizada" == evaluador.modalidad_evaluadores_no) No escolarizada
+                            option(value="mixta", selected="mixta" == evaluador.modalidad_evaluadores_no) Mixta
+                
+                +hr()
+                label(class="col-md-11 col-md-offset-1 alert alert-info") Unidad Academica
+                span(class="control-label col-md-1")
+                div(class="col-md-9")
+                  a.btn.btn-success.fa-r(onclick="addEstudios()")
+                    i.fa.fa-plus-circle.fa-r
+                    | Agregar Unidad Academica
+                
+                +hr()
+                if evaluador.complementario.length >0
+                  - var complementario = evaluador.complementario
+                  - var i = 0
+                  each com in complementario
+                    - var contenedor = "divCompleCont"+i
+                    div(id=contenedor)
+                      hr
+                      +h-input("text", "Disciplina", "complementario["+i+"][disciplina]", "Disciplina", com.disciplina, 9, 3, "", "","")
+                      +h-input("text", "Institución formadora", "complementario["+i+"][institucion_formadora]", "Institución formadora", com.institucion_formadora, 9, 3, "", "","")
+                      div#dependenciaCoparticipanteAdd.form-group
+                        span.control-label.col-md-3
+                        div.col-md-9
+                          a.btn.btn-danger.fa-r(onclick='delCompEvaludor("'+contenedor+'")')
+                            i.fa.fa-trash.fa-r
+                            | Eliminar
+                    - i=i+1
+                div#estudiosComplementariosDiv
+                  
+                +h-input("hidden", "", "estatus_sec_3", "", "true", 9, 3, "", "","") 
+                .row
+                  .col-md-12
+                    hr
+                  .col-md-9.col-md-offset-3
+                    button.btn.btn-success.fa-r(type='submit')
+                      i.fa.fa-save.fa-r
+                      | Guardar
+                      
+                    if evaluador.estatus_sec_2=='true'
+                      a.btn.btn-success.fa-r(href="/evaluadores/#{evaluador._id}/experiencia-evaluador")
+                        i.fa.fa-check-circle.fa-r
+                        | Continuar
+                    else
+                      a.btn.btn-success.disabled.fa-r(href="")
+                        i.fa.fa-check-circle.fa-r
+                        | Continuar
+
+                    a.btn.btn-danger(href="#")
+                      | Cancelar
+
+
+  append javascript
+    script(type='text/javascript', src='/vendor/jquery/dist/jquery.js')
+    script.
+      // PInta combos de carreras y areas
+      function defineCarreras(valor){
+        if (valor==""){
+          $("#formacion_academica_especifico").empty();
+          $("#formacion_academica_carrera").empty();
+          $("#formacion_academica_especifico").append("<option value=''>Seleccione ...</option>");
+          $("#formacion_academica_carrera").append("<option value=''>Seleccione ...</option>");
+    
+          }else{
+            $("#formacion_academica_especifico").empty();
+            $("#formacion_academica_carrera").empty();
+            //- alert(valor);
+            $("#formacion_academica_carrera").append("<option value=''>Seleccione ...</option>");
+            revisaSegunNivel(valor);
+          }
+      }
+
+
+      $( "#formacion_academica" ).change(function(){
+        var valor = $('#formacion_academica :selected').val();
+        defineCarreras(valor);          
+      });
+
+
+
+      // Esto se ejcuta al inicio
+      var formacion_academica = "!{evaluador.formacion_academica}";
+      defineCarreras(formacion_academica); 
+      // ************************
+      
+      function revisaSegunNivel(valor){
+        //- console.log(valor);
+        $("#formacion_academica_especifico").empty();
+        $("#formacion_academica_especifico").append("<option value=''>Seleccione ...</option>");
+        $.ajax({
+          url: "/formacion/consulta/campo_especifico",
+          data: {
+            nombre_campo_amplio: valor
+          },                      
+          type: "POST",
+          dataType: "json",
+          success: function(source){
+            if (source.success === "true"){
+              var contenido = source.content;
+              $.each(contenido, function(index, contenidoEsp) {
+                $.each(contenidoEsp.campo_especifico, function(index, segundonivel){
+                    //- console.log(segundonivel.nombre);
+                    var formacion_academica_especifico_inter = "!{evaluador.formacion_academica_especifico}";
+                    if(formacion_academica_especifico_inter==segundonivel.nombre){
+                      $("#formacion_academica_especifico").append("<option value='"+segundonivel.nombre+"' selected>"+segundonivel.nombre+"</option>");
+                    }else{
+                      $("#formacion_academica_especifico").append("<option value='"+segundonivel.nombre+"'>"+segundonivel.nombre+"</option>");
+                    }                
+               });
+              });
+            }},
+          error: function(dato){
+          
+          }
+        }); //end ajax
+      return false;
+      }
+      
+
+      function defineNivel2 (valor){
+        if (valor==""){
+            $("#formacion_academica_carrera").empty();
+            $("#formacion_academica_carrera").append("<option value=''>Seleccione ...</option>");
+            
+          }else{
+            $("#formacion_academica_carrera").empty();
+            //- alert(valor);
+            $("#formacion_academica_carrera").append("<option value=''>Seleccione ...</option>");
+            revisaTercerNivel(valor);
+          }
+      }
+
+
+      $( "#formacion_academica_especifico").change(function(){
+        var valor = $('#formacion_academica_especifico :selected').val();
+        defineNivel2(valor);
+      });
+
+      var formacion_academica_especifico_in = "!{evaluador.formacion_academica_especifico}";
+      defineNivel2(formacion_academica_especifico_in);
+        
+        function revisaTercerNivel(valor){
+          //- console.log(valor);
+          var general = $("#formacion_academica").val();
+          //- console.log(general);
+          $("#formacion_academica_carrera").empty();
+          $.ajax({
+          url: "/formacion/consulta/carrera",
+          data: {
+          nombre_campo_amplio: general,
+          nombre_campo_especifico: valor
+            },                      
+            type: "POST",
+            dataType: "json",
+            success: function(source){
+            console.log(source);
+            if (source.success === "true"){
+              var contenido = source.content;
+              //- console.log(source);
+                
+              $.each(contenido, function(index, contenidoEsp) {
+                //- console.log(segundonivel.nombre);
+                var formacion_academica_carrera_int = "!{evaluador.formacion_academica_carrera}"
+                if(formacion_academica_carrera_int==contenidoEsp.nombre){
+                  $("#formacion_academica_carrera").append("<option value='"+contenidoEsp.nombre+"' selected>"+contenidoEsp.nombre+"</option>"); 
+                }else{
+                  $("#formacion_academica_carrera").append("<option value='"+contenidoEsp.nombre+"'>"+contenidoEsp.nombre+"</option>"); 
+                }
+              });
+              }},
+              error: function(dato){
+              
+              }
+              }); //end ajax
+              return false;
+          }
+
+          //select "Institución" cambia al select de TIPO DE INSTITUCION
+      function Activas(){
+          $('#Si_docente').hide();
+          $('#No_docente').hide();
+      }
+      Activas();
+      
+      function Si_docente(){
+        $('#Si_docente').show();
+        $('#No_docente').hide();
+      }
+
+      function No_docente(){
+        $('#Si_docente').hide();
+        $('#No_docente').show();
+      }
+
+      var tipo = "!{evaluador.tipo_institucion}";
+      if(tipo=="No"){
+        No_docente();
+      }
+
+      if(tipo=="Si"){
+        Si_docente();
+      }
+
+      //limpa valores de un div
+      function clearValues(id_div){
+        $(':input', '#'+id_div)
+           .not(':button, :submit, :reset, :hidden')
+           .val('')
+           .removeAttr('checked')
+           .removeAttr('selected');
+      }
+
+        
+      $( "#practicas_docentes" ).on('change', function(){
+        var valor = $('#practicas_docentes :selected').val();
+         if (valor==""){
+          clearValues("No_docente");
+          clearValues("Si_docente");
+          Activas();
+         }else{
+            if (valor=="Si"){
+              clearValues("No_docente");
+              Si_docente();              
+            }else{
+              clearValues("Si_docente");
+              No_docente();
+            }
+         }
+      });
+
+      var evaluadores = "!{evaluador.complementario.length}";
+
+      //- Funcion para crear nuevo Estudio Complementario
+      function addEstudios(){
+        $('#estudiosComplementariosDiv').append('<hr><div id="divCompleCont'+evaluadores+'"><div class="form-group"><span class="control-label col-md-3">Disciplina</span><div class="col-md-9"><input type="text" id="complementario['+evaluadores+'][disciplina]" name="complementario['+evaluadores+'][disciplina]" placeholder="Disciplina"  value="" data-validation="" data-toggle="tooltip" data-placement="top" title="" class="form-control"></div></div><div class="form-group"><span class="control-label col-md-3">Institución formadora</span><div class="col-md-9"><input type="text" id="complementario['+evaluadores+'][institucion_formadora]" name="complementario['+evaluadores+'][institucion_formadora]" placeholder="Institución formadora" value="" data-validation="" data-toggle="tooltip" data-placement="top" title="" class="form-control"></div></div><div id="dependenciaCoparticipanteAdd" class="form-group"><span class="control-label col-md-3"></span><div class="col-md-9"><a onclick=delCompEvaludor("divCompleCont'+evaluadores+'") class="btn btn-danger fa-r"><i class="fa fa-trash fa-r"></i>Eliminar</a></div></div></div>');
+        evaluadores=parseInt(evaluadores)+1;
+      }
+      
+      function delCompEvaludor(id){
+        $("#"+id).empty();
+      }
+
+      //***********************
+            

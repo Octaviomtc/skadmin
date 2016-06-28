@@ -1,0 +1,21 @@
+include ../includes/mixins
+html
+  head
+    include ../includes/head
+    include ../includes/head_scripts
+
+  body
+        #content.body-sp
+                #app
+                        .container
+                                h1 Shkola
+                                p
+                                        a(href="/signout") Salir 
+                                        
+                                hr
+                                //- .col-md-3.col-lg-2.col-sm-3
+                                //-         include ../includes/menu
+                                .animated.fadeIn
+                                        block content
+    include ../includes/scripts
+    include ../includes/footer

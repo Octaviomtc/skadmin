@@ -1,0 +1,64 @@
+#nav-vertical
+  nav.navbar.navbar-default(role='navigation')
+    .navbar-header
+      button.navbar-toggle(type='button', data-toggle='collapse', data-target='.navbar-ex1-collapse')
+        span.sr-only Toggle navigation
+        span.icon-bar
+        span.icon-bar
+        span.icon-bar
+              
+    .collapse.navbar-collapse.navbar-ex1-collapse
+      ul.nav.navbar-nav
+        li
+          a(href='#')
+            i.fa.fa-r.fa-user
+            | #{user.username}
+        li(class=datos.estado=="home" ? "active":"")
+          a(href='/home')
+            i.fa.fa-r.fa-home
+            | Inicio
+        li(class=datos.estado=="acciones" ? "active":"")
+          a(href='/acciones-formacion')
+            i.fa.fa-r.fa-archive
+            | Acciones de formación
+        li(class=datos.estado=="programacion" ? "active":"")
+          a(href='/programacion')
+            i.fa.fa-r.fa-calendar
+            | Programación de Acciones de formación
+        li(class=datos.estado=="participantes" ? "active":"")
+          a(href='/participantes')
+            i.fa.fa-r.fa-users
+            | Participantes
+        li
+          a(href='/facilitadores')
+            i.fa.fa-r.fa-graduation-cap
+            | Facilitadores
+        li(class=datos.estado=="unidades" ? "active":"")
+          a(href='/unidades')
+            i.fa.fa-r.fa-building-o
+            | Unidades Politécnicas
+        li(class=datos.estado=="evaluadores" ? "active":"")
+          a(href='/evaluadores')
+            i.fa.fa-r.fa-eye
+            | Evaluadores
+        //- li
+        //-   a(href='#')
+        //-     i.fa.fa-bookmark.fa-r
+        //-     | Áreas de conocimiento
+        li(class=datos.estado=="dictaminacion" ? "active":"")
+          a(href='/dictaminacion')
+            i.fa.fa-gavel.fa-r
+            | Dictaminación
+        li
+          a(href='#')
+            i.fa.fa-r.fa-file-text-o
+            | Reportes
+        if user.rol == "admin"
+          li(class=datos.estado=="administracion" ? "active":"")
+            a(href='/administracion')
+              i.fa.fa-r.fa-cogs
+              | Administración
+        li
+          a(href='/signout')
+            i.fa.fa-r.fa-power-off
+            | Cerrar sesión

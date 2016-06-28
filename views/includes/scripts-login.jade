@@ -1,0 +1,161 @@
+script(src='/vendor/jquery/dist/jquery.js')
+script(src='/vendor/bootstrap/dist/js/bootstrap.js')
+script(src='/vendor/bootstrap-table/src/bootstrap-table.js')
+script(src='/vendor/bootstrap-table/dist/locale/bootstrap-table-es-AR.min.js')
+script(src='/vendor/jquery-form-validator/form-validator/jquery.form-validator.min.js')
+script(src='/vendor/bootstrap-switch/dist/js/bootstrap-switch.min.js')
+script(src='/vendor/bootstrap-filestyle/src/bootstrap-filestyle.js')
+
+script.
+
+    // Estilos para input files
+    $(":file").filestyle({
+      buttonText:     "Seleccionar archivo",
+      buttonName:     "btn-primary",
+      buttonBefore:   true,
+      iconName:       "fa fa-file fa-r"
+    });
+  
+    //Se genera switch en checkbox
+    $.fn.bootstrapSwitch.defaults.size = 'small';
+    $.fn.bootstrapSwitch.defaults.onText = 'Si';
+    $.fn.bootstrapSwitch.defaults.offText = 'No';
+    $.fn.bootstrapSwitch.defaults.onColor = 'success';
+    $(".checkbox-sw").bootstrapSwitch();
+    
+    
+    //Asigna append
+    function add_append_select(id, value, text){
+        $("#"+id).append("<option value='"+value+"'>"+text+"</option>");
+    }
+    
+    $(document).ready(function(){
+        $(function () {
+          $('[data-toggle="tooltip-ayuda"]').tooltip()
+        })
+        //- $.validate();
+        var window_height = $(window).height();
+        var page_height = $('#encabezados').height() + $('#content').height();
+        var footer_height = $('.footerIPN').height();
+
+        if (page_height < window_height) {
+            margin_footer = window_height - page_height - footer_height -0;
+            $('.footerIPN').css('margin-top', margin_footer);
+        }
+
+        
+
+        //- VALIDACIONES
+
+          function destroyTool(id) {
+            $('#' + id).tooltip('destroy')
+          }
+
+          function msgError(id, msg) {
+            $('#' + id).tooltip({
+                title: msg
+            });
+            $('#' + id).tooltip('show');
+          }
+
+
+          var errorMs = '';
+
+          $.formUtils.addValidator({
+            name: 'empty',
+            validatorFunction: function(value, $el, config, language, $form) {
+                if (value.length === 0) {
+                    msgError($el.context.id, "El campo no puede estar vacío.");
+                    return false;
+                } else {
+                    destroyTool($el.context.id);
+                    return true;
+                }
+            },
+            errorMessage: errorMs,
+            errorMessageKey: 'Error'
+          });
+
+
+            //Validacion del curp
+            var curp = /^[A-Za-z]{4}\d{6}(H|M|h|m){1}[A-Za-z]{5}[A-Za-z0-9]{2}$/;
+
+          $.formUtils.addValidator({
+            name: 'curp',
+            validatorFunction: function(value, $el, config, language, $form) {
+                console.log(value);
+                console.log(curp.test(value));
+                if (curp.test(value)) {
+                    destroyTool($el.context.id);
+                    return true;
+                } else {
+                    msgError($el.context.id, "El formato de la CURP no es correcto");
+                    return false;
+                }
+            },
+            errorMessage: errorMs,
+            errorMessageKey: 'Error'
+          });
+
+
+
+          var rfc = /^[A-Za-z]{4}\d{6}[A-Za-z0-9]{3}$/;
+
+          $.formUtils.addValidator({
+            name: 'rfc',
+            validatorFunction: function(value, $el, config, language, $form) {
+                console.log(value);
+                console.log(rfc.test(value));
+                if (rfc.test(value)) {
+                    destroyTool($el.context.id);
+                    return true;
+                } else {
+                    msgError($el.context.id, "El formato del RFC no es correcto");
+                    return false;
+                }
+            },
+            errorMessage: errorMs,
+            errorMessageKey: 'Error'
+          });
+
+
+
+         
+
+          function valida(e){
+                tecla = (document.all) ? e.keyCode : e.which;
+
+                //Tecla de retroceso para borrar, siempre la permite
+                if (tecla==8){
+                    return true;
+                }
+                
+                    // Patron de entrada, en este caso solo acepta numeros
+                    patron =/[0-9]/;
+                    tecla_final = String.fromCharCode(tecla);
+                    return patron.test(tecla_final);
+                }
+
+
+
+                function validaChar(e){
+                tecla = (document.all) ? e.keyCode : e.which;
+
+                //Tecla de retroceso para borrar, siempre la permite
+                if (tecla==8){
+                    return true;
+                }
+                
+                    // Patron de entrada, en este caso solo acepta letras
+                    patron =/[a-z,A-Z,ñ,Ñ, ]/;
+                    tecla_final = String.fromCharCode(tecla);
+                    return patron.test(tecla_final);
+                }
+
+
+
+
+    });
+	
+
+	

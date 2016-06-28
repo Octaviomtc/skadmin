@@ -1,0 +1,20 @@
+extends ../../layouts/general
+
+block content
+  .col-md-8.col-md-offset-2
+      .contenido
+                form.form-horizontal(method='post', action="/login")
+                          +h-input("text", "Usuario", "username", "Usuario", "", 8, 3, "autofocus", "empty","")
+                          +h-input("password", "Contraseña", "password", "Contraseña", "", 8, 3, "", "empty","")
+                          .row
+                                    .col-md-9.col-md-offset-3
+                                              button.btn.btn-info.fa-r(type='submit')
+                                                i.fa.fa-check-circle.fa-r
+                                                | &nbsp;Acceder
+                                    
+
+                                              if message
+                                                br
+                                                .error-message
+                                                  a.text-center #{message}
+                                      
