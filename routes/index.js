@@ -40,9 +40,10 @@ module.exports = function(passport){
         if (req.user){
             res.redirect("/home");
         }
-        res.render('app/login/index', {
-            message: req.flash('message')
-        });
+        // res.render('app/login/index', {
+        //     message: req.flash('message')
+        // });
+        res.render('app/landing/index');
     });
 
     // Formulario Login
